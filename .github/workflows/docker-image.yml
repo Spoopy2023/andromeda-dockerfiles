@@ -47,3 +47,8 @@ jobs:
           push: true
           tags: |
             ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}
+      - name: Build the hello-docker Docker image
+        run: |
+         docker build . --tag ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}
+         docker run ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}
+         docker push ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}
