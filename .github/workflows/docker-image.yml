@@ -1,4 +1,4 @@
-name: build java images
+name: build java
 on:
   workflow_dispatch:
   schedule:
@@ -12,9 +12,6 @@ jobs:
   push:
     name: "andromeda-dockerfiles:java_${{ matrix.tag }}"
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -49,4 +46,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}
+            ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}name: build java
