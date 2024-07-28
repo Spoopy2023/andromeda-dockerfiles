@@ -46,4 +46,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}name: build java
+            ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}
