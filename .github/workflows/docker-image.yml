@@ -5,12 +5,12 @@ on:
     - cron: "0 0 1 * *"
   push:
     branches:
-      - main
+      - master
     paths:
       - java/**
 jobs:
   push:
-    name: "andromeda-dockerfiles:java_${{ matrix.tag }}"
+    name: "yolks:java_${{ matrix.tag }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -38,7 +38,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHRC }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
       - uses: docker/build-push-action@v4
         with:
           context: ./java
@@ -46,9 +46,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/spoopy2023/andromeda-dockerfiles:java_${{ matrix.tag }}
-      - name: Build the hello-docker Docker image
-        run: |
-         docker build . --tag ghcr.io/spoopy2023/andromeda-dockerfiles/java/${{ matrix.tag }}
-         docker run ghcr.io/spoopy2023/andromeda-dockerfiles/java/${{ matrix.tag }}
-         docker push ghcr.io/spoopy2023/andromeda-dockerfiles/java/${{ matrix.tag }}
+            ghcr.io/pterodactyl/yolks:java_${{ matrix.tag }}
