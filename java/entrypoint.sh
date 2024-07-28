@@ -32,7 +32,7 @@ export INTERNAL_IP
 cd /home/container || exit 1
 
 # Print Java version
-printf "\033[1m\033[33mAndromeda Service Worker: \033[0mjava -version\n"
+printf "\033[1m\033[33mAndromeda Docker Service: \033[0mjava -version\n"
 java -version
 
 # Convert all of the "{{VARIABLE}}" parts of the command into the expected shell
@@ -42,7 +42,7 @@ PARSED=$(echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g' | eval echo "$(cat
 
 # Display the command we're running in the output, and then execute it with the env
 # from the container itself.
-printf "\033[1m\033[33mAndromeda Service Worker: \033[0m[0m%s\n" "$PARSED"
+printf "\033[1m\033[33mAndromeda Docker Service: \033[0m%s\n" "$PARSED"
 # shellcheck disable=SC2086
 exec env ${PARSED}
 
