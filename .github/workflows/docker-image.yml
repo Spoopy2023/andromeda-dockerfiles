@@ -1,4 +1,4 @@
-name: build java
+name: build docker images for java
 on:
   workflow_dispatch:
   schedule:
@@ -10,7 +10,7 @@ on:
       - java/**
 jobs:
   push:
-    name: "yolks:java_${{ matrix.tag }}"
+    name: "DockerFiles:java_${{ matrix.tag }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
