@@ -1,4 +1,4 @@
-name: build php2
+name: build php_
 on:
   workflow_dispatch:
   schedule:
@@ -7,7 +7,7 @@ on:
     branches:
       - master
     paths:
-      - php/**
+      - php/*
 jobs:
   push:
     name: "spoopy2023/andromeda-dockerfiles:php_${{ matrix.tag }}"
@@ -16,10 +16,13 @@ jobs:
       fail-fast: false
       matrix:
         tag:
-          - 8
-          - 8.1
-          - 8.2
-          - 8.3
+          - 12
+          - 14
+          - 15
+          - 16
+          - 17
+          - 18
+          - 20
     steps:
       - uses: actions/checkout@v3
       # Setup QEMU for ARM64 Build
@@ -33,10 +36,10 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHRC }}
       - uses: docker/build-push-action@v4
-              with:
+        with:
           context: ./php
           file: ./php/${{ matrix.tag }}/Dockerfile
-          platforms: linux/amd64, linux/arm64
-          push: truea
+          platforms: linux/amd64,linux/arm64
+          push: true
           tags: |
              ghcr.io/spoopy2023/andromeda-dockerfiles:php_${{ matrix.tag }}
