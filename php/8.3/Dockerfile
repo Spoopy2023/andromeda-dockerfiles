@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Copyright (c) 2024 Mac Gould / PlutoNode LTD
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,29 +18,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Default the TZ environment variable to UTC.
-TZ=${TZ:-UTC}
-export TZ
+FROM alpine:latest
 
-# Set environment variable that holds the Internal Docker IP
-INTERNAL_IP=$(ip route get 1 | awk '{print $(NF-2);exit}')
-export INTERNAL_IP
+RUN apk --update --no-cache add curl ca-certificates nginx
+RUN apk add php8.3 php8.3-xml php8.3-exif php8.3-fpm php8.3-session php8.3-soap php8.3-openssl php8.3-gmp php8.3-pdo_odbc php8.3-json php8.3-dom php8.3-pdo php8.3-zip php8.3-mysqli php8.3-sqlite3 php8.3-pdo_pgsql php8.3-bcmath php8.3-gd php8.3-odbc php8.3-pdo_mysql php8.3-pdo_sqlite php8.3-gettext php8.3-xmlreader php8.3-bz2 php8.3-iconv php8.3-pdo_dblib php8.3-curl php8.3-ctype php8.3-phar php8.3-fileinfo php8.3-mbstring php8.3-tokenizer php8.3-simplexml
+COPY --from=composer:latest  /usr/bin/composer /usr/bin/composer
 
-# Switch to the container's working directory
-cd /home/container || exit 1
+USER container
+ENV USER container
+ENV HOME /home/container
 
-# Print Go version
-printf "\033[1m\033[33mAndromeda Docker Service: \033[go version\n"
-go version
+WORKDIR /home/container
+COPY ./entrypoint.sh /entrypoint.sh
 
-# Convert all of the "{{VARIABLE}}" parts of the command into the expected shell
-# variable format of "${VARIABLE}" before evaluating the string and automatically
-# replacing the values.
-PARSED=$(echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g' | eval echo "$(cat -)")
-
-# Display the command we're running in the output, and then execute it with the env
-# from the container itself.
-printf "\033[1m\033[33mAndromeda Docker Service: \033[0m%s\n" "$PARSED"
-# shellcheck disable=SC2086
-exec env ${PARSED}
-
+CMD ["/bin/ash", "/entrypoint.sh"]a

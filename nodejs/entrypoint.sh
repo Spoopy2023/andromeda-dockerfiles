@@ -28,12 +28,13 @@ export TZ
 INTERNAL_IP=$(ip route get 1 | awk '{print $(NF-2);exit}')
 export INTERNAL_IP
 
+
 # Switch to the container's working directory
 cd /home/container || exit 1
 
-# Print Go version
-printf "\033[1m\033[33mAndromeda Docker Service: \033[node -v\n"
-java -version
+# Print node version
+printf "\033[1m\033[33mAndromeda Docker Service: \033[0mnode -v\n"
+node -v
 
 # Convert all of the "{{VARIABLE}}" parts of the command into the expected shell
 # variable format of "${VARIABLE}" before evaluating the string and automatically
