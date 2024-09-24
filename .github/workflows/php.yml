@@ -1,42 +1,69 @@
-name: build php
+name: Build PHP Docker Images
+
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 0 1 * *"
   push:
     branches:
-      - master
-    paths:
-      - go/**
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  push:
-    name: "spoopy2023/andromeda-dockerfiles:php_${{ matrix.tag }}"
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        tag:
-          - 8
-          - 8.1
-          - 8.2
-          - 8.3
+
     steps:
-      - uses: actions/checkout@v3
-      # Setup QEMU for ARM64 Build
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
         with:
-          buildkitd-flags: --debug
-      - uses: docker/login-action@v2
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHRC }}
-      - uses: docker/build-push-action@v4
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
         with:
-          context: ./go
-          file: ./php/${{ matrix.tag }}/Dockerfile
-          platforms: linux/amd64, linux/arm64
+          context: .
           push: true
-          tags: |
-             ghcr.io/spoopy2023/andromeda-dockerfiles:php_${{ matrix.tag }}
+          tags: ghcr.io/${{ github.repository }}/php:latest
+
+      - name: Build and push PHP 8.2 image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/php:8.2
+          build-args: |
+            PHP_VERSION=8.2
+
+      - name: Build and push PHP 8.1 image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/php:8.1
+          build-args: |
+            PHP_VERSION=8.1
+
+      - name: Build and push PHP 8.0 image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/php:8.0
+          build-args: |
+            PHP_VERSION=8.0
