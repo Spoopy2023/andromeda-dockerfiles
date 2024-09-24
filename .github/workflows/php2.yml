@@ -1,4 +1,4 @@
-name: build php
+name: build php_
 on:
   workflow_dispatch:
   schedule:
@@ -7,7 +7,7 @@ on:
     branches:
       - master
     paths:
-      - go/**
+      - php/*
 jobs:
   push:
     name: "spoopy2023/andromeda-dockerfiles:php_${{ matrix.tag }}"
@@ -34,9 +34,9 @@ jobs:
           password: ${{ secrets.GHRC }}
       - uses: docker/build-push-action@v4
         with:
-          context: ./go
+          context: ./php
           file: ./php/${{ matrix.tag }}/Dockerfile
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
              ghcr.io/spoopy2023/andromeda-dockerfiles:php_${{ matrix.tag }}
