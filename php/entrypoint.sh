@@ -1,3 +1,6 @@
+#!/bin/ash
+# entrypoint.sh
+
 # Copyright (c) 2024 Mac Gould / PlutoNode LTD
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,15 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Start PHP-FPM
+php-fpm8 -D
 
-#!/bin/bash
-sleep 1
-
-cd /home/container
-
-# Replace Startup Variables
-MODIFIED_STARTUP=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
-echo ":/home/container$ ${MODIFIED_STARTUP}"
-
-# Run the Server
-${MODIFIED_STARTUP}
+# Start Nginx
+nginx -g "daemon off;"

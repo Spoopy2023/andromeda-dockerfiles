@@ -1,35 +1,58 @@
-# Copyright (c) 2024 Mac Gould / PlutoNode LTD
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
+# Use the official Alpine image as a base
 FROM alpine:latest
 
-RUN apk --update --no-cache add curl ca-certificates nginx
+# Set environment variables
+ENV USER=container
+ENV HOME=/home/container
 
-RUN apk add php8 php8-xml php8-exif php8-fpm php8-session php8-soap php8-openssl php8-gmp
-RUN apk add php8-pdo_odbc php8-json php8-dom php8-pdo php8-zip php8-mysqli php8-sqlite3
-RUN apk add php8-pdo_pgsql php8-bcmath php8-gd php8-odbc php8-pdo_mysql php8-pdo_sqlite
-RUN apk add php8-gettext php8-xmlreader php8-bz2 php8-iconv php8-pdo_dblib php8-curl
-RUN apk add php8-ctype php8-phar php8-fileinfo php8-mbstring php8-tokenizer php8-simplexml
+# Install necessary packages
+RUN apk --update --no-cache add \
+    curl \
+    ca-certificates \
+    nginx \
+    php8.0 \
+    php8.0-xml \
+    php8.0-exif \
+    php8.0-fpm \
+    php8.0-session \
+    php8.0-soap \
+    php8.0-openssl \
+    php8.0-gmp \
+    php8.0-pdo_odbc \
+    php8.0-json \
+    php8.0-dom \
+    php8.0-pdo \
+    php8.0-zip \
+    php8.0-mysqli \
+    php8.0-sqlite3 \
+    php8.0-pdo_pgsql \
+    php8.0-bcmath \
+    php8.0-gd \
+    php8.0-odbc \
+    php8.0-pdo_mysql \
+    php8.0-pdo_sqlite \
+    php8.0-gettext \
+    php8.0-xmlreader \
+    php8.0-bz2 \
+    php8.0-iconv \
+    php8.0-pdo_dblib \
+    php8.0-curl \
+    php8.0-ctype \
+    php8.0-phar \
+    php8.0-fileinfo \
+    php8.0-mbstring \
+    php8.0-tokenizer \
+    php8.0-simplexml
 
-COPY --from=composer:latest  /usr/bin/composer /usr/bin/composer
+# Copy Composer from the official Composer image
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-USER container
-ENV USER container
-ENV HOME /home/container
+# Set the user and working directory
+USER ${USER}
+WORKDIR ${HOME}
+
+# Copy the entrypoint script
+COPY ./entrypoint.sh /entrypoint.sh
+
+# Set the entrypoint script as the default command
+CMD ["/bin/ash", "/entrypoint.sh"]
