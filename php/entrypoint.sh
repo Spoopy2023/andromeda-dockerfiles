@@ -1,7 +1,6 @@
-#!/bin/ash
-# entrypoint.sh
+#!/usr/bin/env bash
 
-# Copyright (c) 2024 Mac Gould / PlutoNode LTD
+# Copyright (c) 2024 Mac Gould and contributors
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Start PHP-FPM
-php-fpm8 -D
+cd /home/container
 
-# Start Nginx
-nginx -g "daemon off;"
+# Make the Docker IP address processesable
+export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
+
+php --version
+
+MODIFIED_STARTUP=$(eval "echo \"$(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')\"")
+echo "Andromeda Docker Service: ${MODIFIED_STARTUP}"
+
+eval "${MODIFIED_STARTUP}"
