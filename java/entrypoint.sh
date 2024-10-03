@@ -19,29 +19,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Default the TZ environment variable to UTC.
-TZ=${TZ:-UTC}
-export TZ
+cd /home/container
 
-# Set environment variable that holds the Internal Docker IP
-INTERNAL_IP=$(ip route get 1 | awk '{print $(NF-2);exit}')
-export INTERNAL_IP
+# Print current Java version
+JAVA_VER=`java -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///'`
+echo "Java version: ${JAVA_VER}"
 
-# Switch to the container's working directory
-cd /home/container || exit 1
+# Make internal Docker IP address available to processes
+export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
-# Print Java version
-printf "\033[1m\033[33mAndromeda Docker Service: \033[0mjava -version\n"
-java -version
+# Replace startup variables.
+MODIFIED_STARTUP=$(echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g' | eval echo "$(cat -)")
 
-# Convert all of the "{{VARIABLE}}" parts of the command into the expected shell
-# variable format of "${VARIABLE}" before evaluating the string and automatically
-# replacing the values.
-PARSED=$(echo "${STARTUP}" | sed -e 's/{{/${/g' -e 's/}}/}/g' | eval echo "$(cat -)")
+# Check if startup command has -Dterminal.jline=false -Dterminal.ansi=true
+JLINE_ARGS=$(echo ${MODIFIED_STARTUP} | grep -o "\-Dterminal.jline=false -Dterminal.ansi=true")
+TIMEZONE_INUSE=$(echo ${MODIFIED_STARTUP} | grep -o "\-Duser.timezone=")
 
-# Display the command we're running in the output, and then execute it with the env
-# from the container itself.
-printf "\033[1m\033[33mAndromeda Docker Service: \033[0m%s\n" "$PARSED"
-# shellcheck disable=SC2086
-exec env ${PARSED}
+Print startup command to console
+echo -e "Andromeda Docker Service: ${MODIFIED_STARTUP}"
 
+# Run the server.
+exec env ${MODIFIED_STARTUP}
