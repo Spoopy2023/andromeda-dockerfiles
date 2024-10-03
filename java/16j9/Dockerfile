@@ -19,7 +19,7 @@
 
 FROM        --platform=$TARGETOS/$TARGETARCH ibm-semeru-runtimes:open-16-jdk
 
-LABEL       author="PlutoNode LTD" maintainer="contact@plutonode.com"
+LABEL       author="PlutoNode LTD DevOps Team" maintainer="contact@plutonode.com"
 
 LABEL       org.opencontainers.image.source="https://github.com/PlutoNode/DockerFiles"
 LABEL       org.opencontainers.image.licenses=MIT

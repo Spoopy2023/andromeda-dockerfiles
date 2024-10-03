@@ -19,7 +19,7 @@
 
 FROM        --platform=$TARGETOS/$TARGETARCH golang:1.17-alpine
 
-LABEL       author="PlutoNode LTD" maintainer="contact@plutonode.com"
+LABEL       author="PlutoNode LTD DevOps Team" maintainer="contact@plutonode.com"
 
 LABEL       org.opencontainers.image.source="https://github.com/PlutoNode/DockerFiles"
 LABEL       org.opencontainers.image.licenses=MIT
