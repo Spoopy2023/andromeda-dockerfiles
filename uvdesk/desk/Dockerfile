@@ -17,20 +17,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM        --platform=$TARGETOS/$TARGETARCH golang:1.15-alpine
+FROM php:8.3-alpine
 
-LABEL       author="PlutoNode LTD DevOps Team" maintainer="contact@plutonode.com"
+RUN apk add --no-cache --update bash composer \
+  && adduser --disabled-password --home /home/container container
 
-LABEL       org.opencontainers.image.source="https://github.com/PlutoNode/DockerFiles"
-LABEL       org.opencontainers.image.licenses=MIT
+USER container
+ENV USER=container HOME=/home/container
 
-RUN         apk add --update --no-cache ca-certificates tzdata \
-    && adduser -D -h /home/container container
+WORKDIR /home/container
 
-
-USER        container
-ENV         USER=container HOME=/home/container
-WORKDIR     /home/container
-
-COPY        ./../entrypoint.sh /entrypoint.sh
-CMD         [ "/bin/bash", "/entrypoint.sh" ]
+COPY ./entrypoint.sh /entrypoint.sh
+CMD ["/bin/bash", "/entrypoint.sh"]

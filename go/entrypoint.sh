@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2024 Mac Gould / PlutoNode LTD
-
+# Copyright (c) 2024 Mac Gould and contributors
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -33,7 +32,7 @@ cd /home/container || exit 1
 
 # Print Go version
 printf "\033[1m\033[33mAndromeda Docker Service: \033[go version\n"
-java -version
+go version
 
 # Convert all of the "{{VARIABLE}}" parts of the command into the expected shell
 # variable format of "${VARIABLE}" before evaluating the string and automatically

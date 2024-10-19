@@ -1,5 +1,4 @@
-# Copyright (c) 2024 Mac Gould / PlutoNode LTD
-
+# Copyright (c) 2024 Mac Gould and contributors
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -20,7 +19,7 @@
 
 FROM        --platform=$TARGETOS/$TARGETARCH node:18-alpine
 
-LABEL       author="PlutoNode LTD" maintainer="contact@plutonode.com"
+LABEL       author="PlutoNode LTD DevOps Team" maintainer="contact@plutonode.com"
 
 LABEL       org.opencontainers.image.source="https://github.com/PlutoNode/DockerFiles"
 LABEL       org.opencontainers.image.licenses=MIT

@@ -1,4 +1,7 @@
+#!/usr/bin/env bash
+
 # Copyright (c) 2024 Mac Gould and contributors
+
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -17,20 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM        --platform=$TARGETOS/$TARGETARCH golang:1.15-alpine
+cd /home/container
 
-LABEL       author="PlutoNode LTD DevOps Team" maintainer="contact@plutonode.com"
+# Make the Docker IP address processesable
+export INTERNAL_IP=`ip route get 1 | awk '{print $(NF-2);exit}'`
 
-LABEL       org.opencontainers.image.source="https://github.com/PlutoNode/DockerFiles"
-LABEL       org.opencontainers.image.licenses=MIT
+php --version
 
-RUN         apk add --update --no-cache ca-certificates tzdata \
-    && adduser -D -h /home/container container
+MODIFIED_STARTUP=$(eval "echo \"$(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')\"")
+echo "Andromeda Docker Service: ${MODIFIED_STARTUP}"
 
-
-USER        container
-ENV         USER=container HOME=/home/container
-WORKDIR     /home/container
-
-COPY        ./../entrypoint.sh /entrypoint.sh
-CMD         [ "/bin/bash", "/entrypoint.sh" ]
+eval "${MODIFIED_STARTUP}"
